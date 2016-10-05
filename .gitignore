@@ -1,5 +1,8 @@
 vendor/
 node_modules/
+data/
+log/
+web/.idea
 
 # Laravel 4 specific
 bootstrap/compiled.php
@@ -10,6 +13,10 @@ bootstrap/cache/
 .env.*.php
 .env.php
 .env
+web/composer.lock
 
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/
+
+*.DS_Store
+
