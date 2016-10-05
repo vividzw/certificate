@@ -54,10 +54,10 @@ fork from <https://github.com/wyhw/certificate>
 
 ### Source
 
-	git checkout https://github.com/wyhw/certificate.git
+	git clone https://github.com/wyhw/certificate.git
 或者 from your fork
 
-	git checkout https://github.com/your_github_id/certificate.git
+	git clone https://github.com/your_github_id/certificate.git
 
 ### Docker
 
