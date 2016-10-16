@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ClassRoom extends Model
+class ClassRoom extends TermModel
 {
 	/**
 	 * The attributes that are mass assignable.
@@ -15,5 +15,6 @@ class ClassRoom extends Model
 		'name', //名称 50
 		'depart', //所属专业部 50
 		'classteacher',
+		'schoolterm',
 	];
 }

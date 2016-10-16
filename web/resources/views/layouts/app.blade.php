@@ -47,7 +47,13 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/home') }}">{{ trans('app.home') }}</a></li>
+                    <li><a href="{{ url('/') }}">{{ trans('app.home') }}</a></li>
+                    <li><a href="{{ url('/term') }}">{{ \App\TermModel::school_term()->name }}</a></li>
+                    <li><a href="{{ url('/depart') }}">{{ trans('comm.depart') }}</a></li>
+                    <li><a href="{{ url('/subject') }}">{{ trans('comm.subject') }}</a></li>
+                    <li><a href="{{ url('/classroom') }}">{{ trans('comm.classroom') }}</a></li>
+                    <li><a href="{{ url('/classteacher') }}">{{ trans('comm.classteacher') }}</a></li>
+                    <li><a href="{{ url('/student') }}">{{ trans('comm.student') }}</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->

@@ -158,6 +158,8 @@ return [
 
 		Maatwebsite\Excel\ExcelServiceProvider::class,
 
+		Zofe\Rapyd\RapydServiceProvider::class
+
     ],
 
     /*
@@ -206,6 +208,10 @@ return [
 
 		'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
-    ],
+		'DataForm' => Zofe\Rapyd\Facades\DataForm::class,
+		'DataEdit' => Zofe\Rapyd\Facades\DataEdit::class,
+		'DataGrid' => Zofe\Rapyd\Facades\DataGrid::class,
+
+	],
 
 ];

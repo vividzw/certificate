@@ -90,8 +90,8 @@ services:
         build: ./memcached
         volumes_from:
             - volumes_data
-        ports:
-            - "11211:11211"
+        #ports:
+        #    - "11211:11211"
         links:
             - php-fpm
 
