@@ -34,6 +34,7 @@ Route::get('/classroom', 'ClassRoomController@grid');
 Route::get('/classroom/edit/{id?}', 'ClassRoomController@form');
 Route::post('/classroom/edit/{id?}', 'ClassRoomController@form');
 Route::get('/classroom/export', 'ClassRoomController@export');
+Route::get('/classroom/import', 'ClassRoomController@import');
 
 Route::get('/classteacher', 'ClassTeacherController@grid');
 Route::get('/classteacher/edit/{id?}', 'ClassTeacherController@form');

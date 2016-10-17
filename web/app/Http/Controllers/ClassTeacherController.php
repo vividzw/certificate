@@ -7,16 +7,4 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-class ClassTeacherController extends Controller
-{
-	public function grid(Request $request) {
-		return TermController::grid($request, new ClassTeacher());
-	}
-
-	public function form(Request $request) {
-		return TermController::form($request, new ClassTeacher());
-	}
-	public function export(Request $request) {
-		TermController::export($request, new ClassTeacher());
-	}
-}
+class ClassTeacherController extends TermController {}

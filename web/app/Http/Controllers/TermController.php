@@ -8,20 +8,55 @@ use App\Http\Requests;
 
 class TermController extends Controller
 {
+	private $object = null;
+	protected $path = null;
+
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('auth');
+		$object_class = "App\\" . $this->classname();
+		$this->object = new $object_class;
+	}
+
+	private function classname() {
+		return str_replace("Controller", "",
+			str_replace("App\\Http\\Controllers\\", "", get_class($this))
+		);
+	}
+
+	public function grid(Request $request) {
+		return $this->__grid($request, $this->object);
+	}
+
+	public function form(Request $request) {
+		return $this->__form($request, $this->object);
+	}
+
+	public function export(Request $request) {
+		$this->__export($request, $this->object);
+	}
+
 	private static function class_to_path($object) {
 		return str_replace("App\\", "", get_class($object));
 	}
+
 	private static function class_to_view_path($object) {
 		return preg_replace('/([A-Z]+)/', "_$1", lcfirst(self::class_to_path($object)));
 	}
-	public static function grid(Request $request, $object, $path = null, $view = null) {
+
+	protected function __grid(Request $request, $object, $path = null, $view = null) {
 		$grid = \DataGrid::source($object);  //same source types of DataSet
 
 		$grid->add('id','ID', true)->style("width:100px");
 		foreach ($object->editable() as $f) {
 			$grid->add($f, trans('comm.' . $f));
 		}
-		if (!$path) $path = strtolower(self::class_to_path($object));
+		if (!$path) $path = $this->path ?: strtolower(self::class_to_path($object));
 		$grid->edit('/' . $path . '/edit', trans('comm.edit'), 'modify|delete'); //shortcut to link DataEdit actions
 
 
@@ -33,7 +68,7 @@ class TermController extends Controller
 		return view('admin/' . $view . '/grid', compact('grid'));
 	}
 
-	public static function form(Request $request, $object, $path = null, $view = null) {
+	protected function __form(Request $request, $object, $path = null, $view = null) {
 		$id = $request->get('modify', $request->get('delete'));
 		if ($id && is_numeric($id)) {
 			$form = \DataForm::source($object::activeWhere("id", $id)->first());
@@ -46,7 +81,7 @@ class TermController extends Controller
 		foreach ($object->editable() as $f) {
 			$form->add($f, trans('comm.' . $f), 'text')->rule('required');
 		}
-		if (!$path) $path = strtolower(self::class_to_path($object));
+		if (!$path) $path = $this->path ?: strtolower(self::class_to_path($object));
 
 		if (!$id || $request->get('modify')) {
 			$form->submit(trans('comm.save'));
@@ -64,7 +99,7 @@ class TermController extends Controller
 		return view('admin/' . $view . '/form', compact('form'));
 	}
 
-	public static function export(Request $request, $object) {
+	protected function __export(Request $request, $object) {
 		$cellData = [
 //			['学号','姓名','成绩'],
 //			['10001','AAAAA','99'],
@@ -94,5 +129,13 @@ class TermController extends Controller
 				$sheet->rows($cellData);
 			});
 		})->download('xls');
+	}
+
+	protected function __import(Request $request, $object) {
+		$filePath = 'storage/exports/'.iconv('UTF-8', 'GBK', '学生成绩').'.xls';
+		\Excel::load($filePath, function($reader) {
+			$data = $reader->all();
+			dd($data);
+		});
 	}
 }

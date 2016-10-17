@@ -9,18 +9,6 @@ use App\Subject;
 
 class SubjectController extends Controller
 {
-	public function grid(Request $request) {
-		return TermController::grid($request, new Subject());
-	}
-
-	public function form(Request $request) {
-		return TermController::form($request, new Subject());
-	}
-
-	public function export(Request $request) {
-		TermController::export($request, new Subject());
-	}
-
     public function gridx() {
 		$grid = \DataGrid::source(Subject::with('name'));  //same source types of DataSet
 

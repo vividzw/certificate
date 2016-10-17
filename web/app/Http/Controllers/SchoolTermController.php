@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-class SchoolTermController extends Controller
+class SchoolTermController extends TermController
 {
 	public function form(Request $request) {
 		if ($request->get('add')) {

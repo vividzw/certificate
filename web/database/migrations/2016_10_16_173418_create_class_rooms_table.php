@@ -16,7 +16,7 @@ class CreateClassRoomsTable extends Migration
 			$table->increments('id');
 			$table->string('name')->unique();
 			$table->string('depart');
-			$table->string('classteacher')->nullable();
+			$table->string('classroom')->nullable();
 			$table->integer('schoolterm');
 			$table->tinyInteger('status');
 			$table->timestamps();
