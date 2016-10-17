@@ -16,4 +16,8 @@ class ProDepartmentController extends Controller
 	public function form(Request $request) {
 		return TermController::form($request, new ProDepartment(), 'depart');
 	}
+
+	public function export(Request $request) {
+		TermController::export($request, new ProDepartment());
+	}
 }

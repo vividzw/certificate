@@ -20,4 +20,7 @@ return [
 	'login' => '登录',
 	'register' => '注册',
 	'logout' => '退出',
+
+	'export' => '导出',
+	'import' => '导入',
 ];

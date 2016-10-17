@@ -6,6 +6,7 @@ return [
     'username' => 'Name',
     'title' => 'Title',
 	'depart' => 'Department',
+	'prodepartment' => 'Department',
 	'classroom' => 'Class room',
 	'classteacher' => 'Class teacher',
 	'student' => 'Student',
@@ -30,4 +31,6 @@ return [
 	'mobile' => 'Mobile',
 	'sex' => 'Sex',
 	'idcard' => 'ID card',
+
+	'list' => 'List',
 ];

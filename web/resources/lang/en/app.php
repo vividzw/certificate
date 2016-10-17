@@ -21,4 +21,6 @@ return [
 	'register' => 'Reigister',
 	'logout' => 'Logout',
 
+	'export' => 'Export',
+	'import' => 'Import',
 ];

@@ -6,6 +6,7 @@ return [
     'username' => '姓名',
     'title' => '标题',
 	'depart' => '专业部',
+	'prodepartment' => '专业部',
 	'classroom' => '班级',
 	'classteacher' => '班主任',
 	'student' => '学生',
@@ -30,4 +31,6 @@ return [
 	'mobile' => '手机',
 	'sex' => '性别',
 	'idcard' => '身份证',
+
+	'list' => '列表',
 ];

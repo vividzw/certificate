@@ -17,6 +17,10 @@ class SubjectController extends Controller
 		return TermController::form($request, new Subject());
 	}
 
+	public function export(Request $request) {
+		TermController::export($request, new Subject());
+	}
+
     public function gridx() {
 		$grid = \DataGrid::source(Subject::with('name'));  //same source types of DataSet
 

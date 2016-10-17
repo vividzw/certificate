@@ -63,4 +63,36 @@ class TermController extends Controller
 		if (!$view) $view = strtolower(self::class_to_view_path($object));
 		return view('admin/' . $view . '/form', compact('form'));
 	}
+
+	public static function export(Request $request, $object) {
+		$cellData = [
+//			['学号','姓名','成绩'],
+//			['10001','AAAAA','99'],
+//			['10002','BBBBB','92'],
+//			['10003','CCCCC','95'],
+//			['10004','DDDDD','89'],
+//			['10005','EEEEE','96'],
+		];
+
+		$data = [];
+		$data[] = "ID";
+		foreach ($object->editable() as $k) {
+			$data[] = trans("comm.{$k}");
+		}
+		$cellData[] = $data;
+		foreach ($object->activeWhere()->get() as $k => $o) {
+			$data = [];
+			$data[] = $o->id;
+			foreach ($object->editable() as $k) {
+				$data[] = $o->{$k};
+			}
+			$cellData[] = $data;
+		}
+
+		\Excel::create(trans('comm.' . strtolower(self::class_to_path($object))), function($excel) use ($cellData) {
+			$excel->sheet(trans('comm.list'), function($sheet) use ($cellData) {
+				$sheet->rows($cellData);
+			});
+		})->download('xls');
+	}
 }

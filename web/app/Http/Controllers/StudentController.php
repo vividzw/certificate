@@ -16,4 +16,8 @@ class StudentController extends Controller
 	public function form(Request $request) {
 		return TermController::form($request, new Student());
 	}
+
+	public function export(Request $request) {
+		TermController::export($request, new Student());
+	}
 }

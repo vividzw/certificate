@@ -13,14 +13,19 @@ class TermModel extends Model
 		return $query;
 	}
 
-	public static function activeWhere($key, $opt, $val = null) {
+	public static function activeWhere($key = null, $opt = null, $val = null) {
 		if (is_null($val)) {
 			$val = $opt;
 			$opt = "=";
 		}
-		return static::where('status', 1)
-			->where('schoolterm', static::school_term()
-			->id)->where($key, $opt, $val);
+		if (is_null($key) || is_null($val)) {
+			return static::where('status', 1)
+				->where('schoolterm', static::school_term()->id);
+		} else {
+			static::where('status', 1)
+				->where('schoolterm', static::school_term()->id)
+				->where($key, $opt, $val);
+		}
 	}
 
 	private static $schoolterm;

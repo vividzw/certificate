@@ -16,4 +16,7 @@ class ClassTeacherController extends Controller
 	public function form(Request $request) {
 		return TermController::form($request, new ClassTeacher());
 	}
+	public function export(Request $request) {
+		TermController::export($request, new ClassTeacher());
+	}
 }

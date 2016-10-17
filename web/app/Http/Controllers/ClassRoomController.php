@@ -16,4 +16,8 @@ class ClassRoomController extends Controller
 	public function form(Request $request) {
 		return TermController::form($request, new ClassRoom());
 	}
+
+	public function export(Request $request) {
+		TermController::export($request, new ClassRoom());
+	}
 }

@@ -47,13 +47,15 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
+                    @if (!Auth::guest())
                     <li><a href="{{ url('/') }}">{{ trans('app.home') }}</a></li>
                     <li><a href="{{ url('/term') }}">{{ \App\TermModel::school_term()->name }}</a></li>
-                    <li><a href="{{ url('/depart') }}">{{ trans('comm.depart') }}</a></li>
-                    <li><a href="{{ url('/subject') }}">{{ trans('comm.subject') }}</a></li>
-                    <li><a href="{{ url('/classroom') }}">{{ trans('comm.classroom') }}</a></li>
-                    <li><a href="{{ url('/classteacher') }}">{{ trans('comm.classteacher') }}</a></li>
-                    <li><a href="{{ url('/student') }}">{{ trans('comm.student') }}</a></li>
+                    <li><a href="{{ url('/depart') }}/">{{ trans('comm.depart') }}</a></li>
+                    <li><a href="{{ url('/subject') }}/">{{ trans('comm.subject') }}</a></li>
+                    <li><a href="{{ url('/classroom') }}/">{{ trans('comm.classroom') }}</a></li>
+                    <li><a href="{{ url('/classteacher') }}/">{{ trans('comm.classteacher') }}</a></li>
+                    <li><a href="{{ url('/student') }}/">{{ trans('comm.student') }}</a></li>
+                    @endif
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -63,6 +65,8 @@
                         <li><a href="{{ url('/login') }}">{{ trans("app.login") }}</a></li>
                         <li><a href="{{ url('/register') }}">{{ trans("app.register") }}</a></li>
                     @else
+                        <li><a href="export">{{ trans('app.export') }}</a></li>
+                        <li><a href="import">{{ trans('app.import') }}</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
