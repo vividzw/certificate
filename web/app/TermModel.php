@@ -22,7 +22,7 @@ class TermModel extends Model
 			return static::where('status', 1)
 				->where('schoolterm', static::school_term()->id);
 		} else {
-			static::where('status', 1)
+			return static::where('status', 1)
 				->where('schoolterm', static::school_term()->id)
 				->where($key, $opt, $val);
 		}
