@@ -32,4 +32,6 @@ class ClassTeacher extends TermModel
 	protected $hidden = [
 		'password', 'remember_token',
 	];
+
+	public $related = ['classrooms' => 'ClassRoom'];
 }

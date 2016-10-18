@@ -17,4 +17,6 @@ class ProDepartment extends TermModel
 		'schoolterm',
 	];
 
+	public $related = ['subjects' => 'Subject'];
+
 }

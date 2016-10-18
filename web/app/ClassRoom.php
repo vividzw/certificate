@@ -17,4 +17,9 @@ class ClassRoom extends TermModel
 		'classteacher',
 		'schoolterm',
 	];
+
+	public $related = [
+		'depart' => 'ProDepartment',
+		'classteacher' => 'ClassTeacher'
+	];
 }

@@ -20,4 +20,9 @@ class Student extends TermModel
 		'schoolterm',
 	];
 
+	public $related = [
+		'classroom' => 'ClassRoom',
+		'subjects' => 'Subject'
+	];
+
 }

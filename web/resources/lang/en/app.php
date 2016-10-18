@@ -21,6 +21,7 @@ return [
 	'register' => 'Reigister',
 	'logout' => 'Logout',
 
+	'excel_template' => 'Template',
 	'export' => 'Export',
 	'import' => 'Import',
 ];

@@ -30,6 +30,8 @@ fork from <https://github.com/wyhw/certificate>
 ##### Windows
 <https://docs.docker.com/docker-for-windows/>
 	
+#### Install docker compose
+<https://docs.docker.com/compose/install/>
 
 #### 安装 git && sourcetree
 

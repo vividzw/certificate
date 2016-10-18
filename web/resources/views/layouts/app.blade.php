@@ -65,8 +65,9 @@
                         <li><a href="{{ url('/login') }}">{{ trans("app.login") }}</a></li>
                         <li><a href="{{ url('/register') }}">{{ trans("app.register") }}</a></li>
                     @else
-                        <li><a href="export">{{ trans('app.export') }}</a></li>
-                        <li><a href="import">{{ trans('app.import') }}</a></li>
+                        <li><a href="/{{ $path }}export/tpl">{{ trans('app.excel_template') }}</a></li>
+                        <li><a href="/{{ $path }}export">{{ trans('app.export') }}</a></li>
+                        <li><a href="/{{ $path }}import">{{ trans('app.import') }}</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>

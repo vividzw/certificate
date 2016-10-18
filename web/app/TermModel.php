@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class TermModel extends Model
 {
+	public static $unique = "name";
+	public $related = [];
+
 	public function newQuery() {
 		$query = parent::newQuery();
 		$query->where('status', 1)
@@ -28,6 +31,15 @@ class TermModel extends Model
 		}
 	}
 
+	public static function object($id) {
+		return static::activeWhere('id', $id)->first();
+	}
+
+	public static function uniqueObject($uniqueValue) {
+		if (!static::$unique) return null;
+		return static::activeWhere(static::$unique, $uniqueValue)->first();
+	}
+
 	private static $schoolterm;
 	protected static function school_term() {
 		if (self::$schoolterm) return self::$schoolterm;
@@ -47,5 +59,9 @@ class TermModel extends Model
 
 	public function editable() {
 		return array_diff($this->fillable, ['schoolterm']);
+	}
+
+	public static function cache($classname, $name) {
+
 	}
 }

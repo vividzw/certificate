@@ -21,6 +21,7 @@ return [
 	'register' => '注册',
 	'logout' => '退出',
 
+	'excel_template' => '模板',
 	'export' => '导出',
 	'import' => '导入',
 ];

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Subject;
 
-class SubjectController extends Controller
+class SubjectController extends TermController
 {
     public function gridx() {
 		$grid = \DataGrid::source(Subject::with('name'));  //same source types of DataSet
