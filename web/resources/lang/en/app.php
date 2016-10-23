@@ -24,4 +24,6 @@ return [
 	'excel_template' => 'Template',
 	'export' => 'Export',
 	'import' => 'Import',
+
+	'email' => 'Email Or Mobile',
 ];

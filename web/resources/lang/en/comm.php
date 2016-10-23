@@ -4,6 +4,7 @@ return [
 
     'name' => 'Name',
     'username' => 'Name',
+	'email' => 'Email',
     'title' => 'Title',
 	'depart' => 'Department',
 	'prodepartment' => 'Department',
@@ -18,6 +19,7 @@ return [
 	'delete' => 'Delete',
 	'save' => 'Save',
 	'saveok' => 'ok record saved',
+	'saveerr' => 'error record save',
 	'deleteok' => 'ok record deleted',
 	'importok' => 'ok excel imported',
 	'importerr' => 'error when excel import',
@@ -34,6 +36,14 @@ return [
 	'mobile' => 'Mobile',
 	'sex' => 'Sex',
 	'idcard' => 'ID card',
+
+	'examsignup' => 'Exam Signup',
+	'pay_fee' => 'Fee',
+	'paid_fee' => 'Paid Fee',
+	'score' => 'Score',
+	'pass' => 'PASS',
+	'bak' => 'Bak',
+
 
 	'list' => 'List',
 ];

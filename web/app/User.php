@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 
 class User extends Authenticatable
 {
+	use CacheModel;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +24,52 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'role',
     ];
+
+	public function admin() {
+		return $this->role == "SuperMan";
+	}
+
+	public function exam_admin() {
+		return $this->admin() || $this->role == "ExamAdmin";
+	}
+
+	public function class_teacher() {
+		return $this->exam_admin() || $this->role == "ClassTeacher";
+	}
+	public function student() {
+		return $this->class_teacher() || $this->role == "Student";
+	}
+
+	public static function object($id) {
+		return static::where('id', $id)->first();
+	}
+
+	public static function uniqueObject($uniqueValue) {
+		return static::where('name', $uniqueValue)->first();
+	}
+
+	public static function validRole(Request $request, $user) {
+		$user = static::cacheObject($user->id);
+		if (!$user) return false;
+		$get_path = function ($path) {
+			if (preg_match('/^([a-z]*)\/?.*$/', $path, $matches)) {
+				return $matches[1];
+			}
+			return false;
+		};
+		$path = $get_path($request->path());
+		if ($user->admin()) return true;
+		if ($user->exam_admin()) {
+			if ($path == 'user') return false;
+		}
+		if ($user->class_teacher()) {
+			if (in_array($path, ['examreport', 'examadd'])){
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
 }

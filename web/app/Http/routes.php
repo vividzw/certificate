@@ -15,7 +15,7 @@ App::setLocale(config('app.locale'));
 Route::auth();
 
 Route::get('/', function () {
-	return view('welcome');
+	return view('welcome', ['path' => '']);
 });
 
 Route::get('/home', 'HomeController@index');
@@ -54,6 +54,11 @@ Route::post('/student/edit/{id?}', 'StudentController@form');
 Route::get('/student/export/{template?}', 'StudentController@export');
 Route::get('/student/import', 'StudentController@import');
 Route::post('/student/import', 'StudentController@import');
+
+
+Route::get('/examsignup', 'ExamSignupController@grid');
+Route::get('/examsignup/edit/{id?}', 'ExamSignupController@form');
+Route::post('/examsignup/edit/{id?}', 'ExamSignupController@form');
 
 Route::get('/term', 'SchoolTermController@form');
 Route::post('/term', 'SchoolTermController@form');

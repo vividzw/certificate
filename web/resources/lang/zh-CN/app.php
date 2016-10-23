@@ -24,4 +24,6 @@ return [
 	'excel_template' => '模板',
 	'export' => '导出',
 	'import' => '导入',
+
+	'email' => '手机号码或邮件地址',
 ];

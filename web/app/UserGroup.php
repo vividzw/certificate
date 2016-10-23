@@ -10,7 +10,6 @@ class UserGroup
 	];
 	protected static $admin = [
 		'User' => '/user',
-		'UserGroup' => '/user/group',
 		'ClassRoom' => '/classroom',
 		'ClassTeacher' => '/classteacher',
 		'Student' => '/student',

@@ -16,6 +16,7 @@ class CreateClassTearchersTable extends Migration
 			$table->increments('id');
 			$table->string('name');
 			$table->string('classrooms');
+			$table->string('email');
 			$table->string('mobile');
 			$table->string('back')->nullable();
 			$table->string('password');
@@ -23,6 +24,12 @@ class CreateClassTearchersTable extends Migration
 			$table->tinyInteger('status');
 			$table->rememberToken();
 			$table->timestamps();
+
+			$table->index('name', 'index_name');
+			$table->index('email', 'index_email');
+			$table->index('mobile', 'index_mobile');
+			$table->index('schoolterm', 'index_schoolterm');
+			$table->index('status', 'index_status');
 		});
 	}
 

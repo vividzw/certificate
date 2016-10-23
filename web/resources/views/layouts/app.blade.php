@@ -50,6 +50,7 @@
                     @if (!Auth::guest())
                     <li><a href="{{ url('/') }}">{{ trans('app.home') }}</a></li>
                     <li><a href="{{ url('/term') }}">{{ \App\TermModel::school_term()->name }}</a></li>
+                    <li><a href="{{ url('/examsignup') }}/">{{ trans('comm.examsignup') }}</a></li>
                     <li><a href="{{ url('/depart') }}/">{{ trans('comm.depart') }}</a></li>
                     <li><a href="{{ url('/subject') }}/">{{ trans('comm.subject') }}</a></li>
                     <li><a href="{{ url('/classroom') }}/">{{ trans('comm.classroom') }}</a></li>
@@ -63,7 +64,9 @@
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                         <li><a href="{{ url('/login') }}">{{ trans("app.login") }}</a></li>
+                        @if (\App\TermModel::canRegister())
                         <li><a href="{{ url('/register') }}">{{ trans("app.register") }}</a></li>
+                        @endif
                     @else
                         <li><a href="/{{ $path }}export/tpl">{{ trans('app.excel_template') }}</a></li>
                         <li><a href="/{{ $path }}export">{{ trans('app.export') }}</a></li>

@@ -20,6 +20,10 @@ class CreateSubjectsTable extends Migration
 			$table->integer('schoolterm');
 			$table->tinyInteger('status');
 			$table->timestamps();
+
+			$table->index('name', 'index_name');
+			$table->index('schoolterm', 'index_schoolterm');
+			$table->index('status', 'index_status');
 		});
 	}
 

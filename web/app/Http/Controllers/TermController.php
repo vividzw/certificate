@@ -34,6 +34,11 @@ class TermController extends Controller
 		return $this->path ? $this->path . "/" : strtolower(self::class_to_path($this->object)) . "/";
 	}
 
+	public function afterSaved(Request $request, $object) {
+		$object::cacheObject($object->id, true);
+		return true;
+	}
+
 	public function grid(Request $request) {
 		$object = $this->object;
 		$grid = \DataGrid::source($object);  //same source types of DataSet
@@ -41,11 +46,26 @@ class TermController extends Controller
 		$grid->add('id','ID', true)->style("width:100px");
 		foreach ($object->editable() as $f) {
 			if (isset($object->related[$f])) {
-				//TODO 检查数据
-				$class_name = $object->related[$f];
-				$grid->add($f, trans('comm.' . $f));
+				$class_name = "App\\" . $object->related[$f];
+				if (in_array($f, $object->array)) {
+					$grid->add($f, trans('comm.' . $f))->cell(function ($value) use ($class_name) {
+						$array = explode("|", $value);
+						if ($class_name::$unique) {
+							foreach ($array as $i => $v) {
+								if ($_v = $class_name::convertValue($v)) {
+									$array[$i] = $_v;
+								}
+							}
+						}
+						return join(",", $array);
+					});
+				} else {
+					$grid->add($f, trans('comm.' . $f))->cell(function($value) use ($class_name) {
+						return $class_name::convertValue($value) ?: $value;
+					});
+				}
 			} else {
-				$grid->add($f, trans('comm.' . $f));
+				$grid->add($f, trans('comm.' . $f), $f == $object::$unique);
 			}
 		}
 		$path = $this->url_path();
@@ -69,10 +89,47 @@ class TermController extends Controller
 			$form = \DataForm::source(new $object());
 			$form->set('schoolterm', $object::school_term()->id);
 		}
-
 		//add fields to the form
 		foreach ($object->editable() as $f) {
-			$form->add($f, trans('comm.' . $f), 'text')->rule('required');
+			if (isset($object->related[$f]) && !in_array($f, $object->related_text)) {
+				$class_name = "App\\" . $object->related[$f];
+				if (in_array($f, $object->array)) {
+					$form->add($f, trans('comm.' . $f), 'checkboxgroup')
+						->options($class_name::selectObjects());
+					$arr = [];
+					foreach (explode("|", $form->model->$f) as $_id) {
+						if (strpos($_id, "id:") === 0) {
+							$arr[] = $_id;
+							continue;
+						}
+						$arr[] = $class_name::convertIdOrName($_id);
+					}
+					$form->model->$f = join("|", $arr);
+				} else {
+					$form->add($f, trans('comm.' . $f),'select')
+						->options($class_name::selectObjects());
+					if (strpos($form->model->$f, "id:") !== 0) {
+						$form->model->$f = $class_name::convertIdOrName($form->model->$f);
+					}
+				}
+			} else {
+				if (isset($object->initData[$f])) {
+					if (is_array($object->initData[$f])) {
+						$form->add($f, trans('comm.' . $f),'select')
+							->options($object->initData[$f]);
+					} else {
+						$form->model->$f = $object->initData[$f];
+						$form->add($f, trans('comm.' . $f), 'text')->rule('required');
+					}
+				} else {
+					if (in_array($f, $object->readonly) && $form->model->$f) {
+						$form->add($f, trans('comm.' . $f), 'text')->rule('required')
+							->attributes(['readonly' => 'readonly']);
+					} else {
+						$form->add($f, trans('comm.' . $f), 'text')->rule('required');
+					}
+				}
+			}
 		}
 
 		$path = $this->url_path();
@@ -83,10 +140,15 @@ class TermController extends Controller
 			$form->set('status', '0');
 			$form->submit(trans('comm.delete'));
 		}
-		$form->saved(function() use ($form, $path)
+		$_this = $this;
+		$form->saved(function() use ($_this, $form, $request, $object, $path)
 		{
-			$form->message(trans('comm.saveok'));
-			$form->link("/$path", trans('comm.back'));
+			if ($_this->afterSaved($request, $object)) {
+				$form->message(trans('comm.saveok'));
+				$form->link("/$path", trans('comm.back'));
+			} else {
+				$form->message(trans('comm.saveerr'));
+			}
 		});
 
 		$view = strtolower(self::class_to_view_path($object));
@@ -121,7 +183,20 @@ class TermController extends Controller
 				$data = [];
 				$data[] = $o->id;
 				foreach ($object->editable() as $k) {
-					$data[] = $o->{$k};
+					if (isset($object->related[$k])) {
+						$sub_class_name = "App\\" . $object->related[$k];
+						if (in_array($k, $object->array)) {
+							$arr = [];
+							foreach (explode("|", $o->{$k}) as $_id) {
+								$arr[] = $sub_class_name::convertIdOrName($_id, false);
+							}
+							$data[] = join(",", $arr);
+						} else {
+							$data[] = $sub_class_name::convertIdOrName($o->{$k}, false);
+						}
+					} else {
+						$data[] = $o->{$k};
+					}
 				}
 				$cellData[] = $data;
 			}
@@ -182,14 +257,28 @@ class TermController extends Controller
 							if (!$obj) $obj = new $class_name;
 							unset($data['id']);
 							foreach($data as $k => $v) {
-								$obj->$k = $v;
+								if (isset($obj->related[$k])) {
+									$sub_class_name = "App\\" . $obj->related[$k];
+									if (in_array($k, $obj->array)) {
+										$arr = [];
+										foreach (preg_split("/(,|，)/", $v) as $_id) {
+											$arr[] = $sub_class_name::convertIdOrName($_id);
+										}
+										$obj->$k = join("|", $arr);
+									} else {
+										$obj->$k = $sub_class_name::convertIdOrName($v);
+									}
+								} else {
+									$obj->$k = $v;
+								}
 							}
 							if ($obj->id) {
 								$obj->update();
 							} else {
 								$data['schoolterm'] = $obj::school_term()->id;
-								$class_name::create($data);
+								$obj = $class_name::create($data);
 							}
+							$obj::cacheObject($obj->id, true);
 						}
 					}
 					unlink($filepath);

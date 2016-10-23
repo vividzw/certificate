@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use \Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -21,7 +23,37 @@ class AuthController extends Controller
     |
     */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesAndRegistersUsers {
+		showRegistrationForm as RegistersUsers_showRegistrationForm;
+		login as Authenticates_login;
+	}
+	use ThrottlesLogins;
+
+
+	public function showRegistrationForm()
+	{
+		if (!\App\TermModel::canRegister()) {
+			die("Cannot allow register");
+		}
+		return $this->RegistersUsers_showRegistrationForm();
+	}
+
+	/**
+	 * Handle a login request to the application.
+	 *
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function login(Request $request)
+	{
+		if (($email = $request->get('email')) && preg_match('/^([1-9]\d{10})$/', $email)) {
+			$ct = \App\ClassTeacher::objectByMobile($email);
+			if ($ct) {
+				$request->merge(['email' => $ct->email]);
+			}
+		}
+		return $this->Authenticates_login($request);
+	}
 
     /**
      * Where to redirect users after login / registration.

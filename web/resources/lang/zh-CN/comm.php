@@ -4,6 +4,7 @@ return [
 
     'name' => '名称',
     'username' => '姓名',
+	'email' => '邮箱地址',
     'title' => '标题',
 	'depart' => '专业部',
 	'prodepartment' => '专业部',
@@ -18,6 +19,7 @@ return [
 	'delete' => '删除',
 	'save' => '保存',
 	'saveok' => '成功保存',
+	'saveerr' => '保存失败',
 	'deleteok' => '成功删除',
 	'importok' => '成功导入',
 	'importerr' => '导入失败',
@@ -34,6 +36,13 @@ return [
 	'mobile' => '手机',
 	'sex' => '性别',
 	'idcard' => '身份证',
+
+	'examsignup' => '报考',
+	'pay_fee' => '应交费用',
+	'paid_fee' => '已交费用',
+	'score' => '成绩',
+	'pass' => '评定',
+	'bak' => '备注',
 
 	'list' => '列表',
 ];

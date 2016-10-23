@@ -17,6 +17,7 @@ class ProDepartment extends TermModel
 		'schoolterm',
 	];
 
+	public $array = ['subjects'];
 	public $related = ['subjects' => 'Subject'];
 
 }

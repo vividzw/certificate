@@ -10,6 +10,7 @@ use App\Http\Requests;
 
 class SchoolTermController extends TermController
 {
+
 	public function form(Request $request) {
 		if ($request->get('add')) {
 			$id = null;
@@ -51,6 +52,7 @@ class SchoolTermController extends TermController
 			$form->link("/term", trans('comm.back'));
 		});
 
-		return view('admin/school_term/form', compact('form'));
+		$path = "";
+		return view('admin/school_term/form', compact('form', 'path'));
 	}
 }

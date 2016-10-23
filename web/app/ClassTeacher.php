@@ -14,14 +14,14 @@ class ClassTeacher extends TermModel
 	protected $fillable = [
 		'name', //姓名 30
 		'classrooms', //班级 50
+		'email',
 		'mobile', //手机号 11
 		'back',
-		'password',
 		'schoolterm',
 	];
 
 	public function editable() {
-		return array_diff(parent::editable(), ['back', 'password']);
+		return array_diff(parent::editable(), ['back']);
 	}
 
 	/**
@@ -30,8 +30,17 @@ class ClassTeacher extends TermModel
 	 * @var array
 	 */
 	protected $hidden = [
-		'password', 'remember_token',
+		'password', 'remember_token', 'user'
 	];
 
-	public $related = ['classrooms' => 'ClassRoom'];
+	public $array = ['classrooms'];
+	public $related = [
+		'classrooms' => 'ClassRoom',
+		'user' => 'User',
+	];
+	public $readonly = ['name'];
+
+	public static function objectByMobile($mobile) {
+		return static::activeWhere('mobile', $mobile)->first();
+	}
 }
