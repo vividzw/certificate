@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 
-class TermAuthenticate extends Authenticate
+class TermAuthenticate
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,6 @@ class TermAuthenticate extends Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-		$next = parent::handle($request, $next, $guard);
 		if (!User::validRole($request, Auth::guard($guard)->user())) {
 			if ($request->ajax() || $request->wantsJson()) {
 				return response('Unauthorized.', 401);
@@ -26,6 +25,6 @@ class TermAuthenticate extends Authenticate
 				return redirect()->guest('login');
 			}
 		}
-		return $next;
+		return $next($request);
     }
 }

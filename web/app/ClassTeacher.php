@@ -43,4 +43,8 @@ class ClassTeacher extends TermModel
 	public static function objectByMobile($mobile) {
 		return static::activeWhere('mobile', $mobile)->first();
 	}
+
+	public function classroom_list() {
+		return $this->array_field_list('classrooms');
+	}
 }

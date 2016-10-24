@@ -20,6 +20,11 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index');
 
+//For ClassTeacher
+Route::get('/examadd/select_subject', 'ExamSignupController@select_subject');
+Route::get('/examadd/select_students', 'ExamSignupController@select_students');
+
+//For Admin
 Route::get('/depart', 'ProDepartmentController@grid');
 Route::get('/depart/edit/{id?}', 'ProDepartmentController@form');
 Route::post('/depart/edit/{id?}', 'ProDepartmentController@form');

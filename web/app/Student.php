@@ -39,4 +39,8 @@ class Student extends TermModel
 			'高中' => '高中',
 		],
 	];
+
+	public function subject_list() {
+		return $this->array_field_list('subjects');
+	}
 }

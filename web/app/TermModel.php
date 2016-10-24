@@ -24,6 +24,20 @@ class TermModel extends Model
 		return $class::cacheUniqueObject($this->{$field});
 	}
 
+	protected function array_field_list($field) {
+		$fn = explode("|", $this->{$field});
+		if (!isset($this->related[$field])) {
+			return $fn;
+		}
+		$class_name = "App\\" . $this->related[$field];
+		$objects = [];
+		foreach ($fn as $n) {
+			$o = $class_name::objectByIdOrName($n);
+			if ($o) $objects[$n] = $o;
+		}
+		return $objects;
+	}
+
 	public function newQuery() {
 		$query = parent::newQuery();
 		$query->where('status', 1)
@@ -75,14 +89,22 @@ class TermModel extends Model
 		return !$o ? "<" . $v . ">" : null;
 	}
 
-	public static function convertIdOrName($v, $toId = true) {
+	protected static function id_parse($id) {
+		return intval(substr($id, 3));
+	}
+
+	public static function objectByIdOrName($v) {
 		if (!static::$unique) return null;
 		if (strpos($v, "id:") === 0) {
-			$id = intval(substr($v, 3));
-			$o = static::cacheObject($id);
+			$id = self::id_parse($v);
+			return static::cacheObject($id);
 		} else {
-			$o = static::cacheUniqueObject($v);
+			return static::cacheUniqueObject($v);
 		}
+	}
+
+	public static function convertIdOrName($v, $toId = true) {
+		$o = static::objectByIdOrName($v);
 		return $o ? ($toId ? "id:" . $o->id : $o->{static::$unique}) : $v;
 	}
 

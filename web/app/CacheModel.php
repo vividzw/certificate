@@ -16,7 +16,9 @@ trait CacheModel
 			}
 			$srObj = \Cache::store('redis')->get($cacheKey);
 			if ($srObj) {
-				self::$caches[$cacheKey] = $obj = unserialize($srObj);
+				$obj = unserialize($srObj);
+				$obj->cached = true;
+				self::$caches[$cacheKey] = $obj;
 				return $obj;
 			}
 		}

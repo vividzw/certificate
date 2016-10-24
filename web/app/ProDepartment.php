@@ -20,4 +20,7 @@ class ProDepartment extends TermModel
 	public $array = ['subjects'];
 	public $related = ['subjects' => 'Subject'];
 
+	public function subject_list() {
+		return $this->array_field_list('subjects');
+	}
 }

@@ -19,7 +19,7 @@ class TermController extends Controller
 	 */
 	public function __construct()
 	{
-		$this->middleware('auth');
+		$this->middleware(['auth', 'termauth']);
 		$object_class = "App\\" . $this->classname();
 		$this->object = new $object_class;
 	}
