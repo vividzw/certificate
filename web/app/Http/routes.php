@@ -21,8 +21,8 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index');
 
 //For ClassTeacher
-Route::get('/examadd/select_subject', 'ExamSignupController@select_subject');
-Route::get('/examadd/select_students', 'ExamSignupController@select_students');
+Route::get('/examadd', 'ExamSignupController@select_subject');
+Route::post('/examadd', 'ExamSignupController@select_students');
 
 //For Admin
 Route::get('/depart', 'ProDepartmentController@grid');

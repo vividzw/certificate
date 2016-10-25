@@ -38,11 +38,14 @@ return [
 	'idcard' => '身份证',
 
 	'examsignup' => '报考',
+	'examadd' => '报考(班主任专用)',
 	'pay_fee' => '应交费用',
 	'paid_fee' => '已交费用',
 	'score' => '成绩',
 	'pass' => '评定',
 	'bak' => '备注',
+
+	'education' => '学历',
 
 	'list' => '列表',
 ];

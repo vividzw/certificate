@@ -38,12 +38,14 @@ return [
 	'idcard' => 'ID card',
 
 	'examsignup' => 'Exam Signup',
+	'examadd' => 'Exam Sign(ClassTeacher)',
 	'pay_fee' => 'Fee',
 	'paid_fee' => 'Paid Fee',
 	'score' => 'Score',
 	'pass' => 'PASS',
 	'bak' => 'Bak',
 
+	'education' => 'Education',
 
 	'list' => 'List',
 ];

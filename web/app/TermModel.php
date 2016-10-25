@@ -33,7 +33,7 @@ class TermModel extends Model
 		$objects = [];
 		foreach ($fn as $n) {
 			$o = $class_name::objectByIdOrName($n);
-			if ($o) $objects[$n] = $o;
+			if ($o) $objects[$o->name] = $o;
 		}
 		return $objects;
 	}
@@ -89,7 +89,7 @@ class TermModel extends Model
 		return !$o ? "<" . $v . ">" : null;
 	}
 
-	protected static function id_parse($id) {
+	public static function id_parse($id) {
 		return intval(substr($id, 3));
 	}
 

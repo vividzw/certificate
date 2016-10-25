@@ -22,4 +22,8 @@ class ClassRoom extends TermModel
 		'depart' => 'ProDepartment',
 		'classteacher' => 'ClassTeacher'
 	];
+
+	public function students() {
+		return \App\Student::activeWhere('classroom', "id:{$this->id}");
+	}
 }

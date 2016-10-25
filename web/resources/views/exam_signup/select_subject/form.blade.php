@@ -23,21 +23,44 @@
         }
     </style>
     <script>
-        var subjects = {};
+        var subjects = new Array();
+        var i = 0;
         @foreach ($subject_names as $name)
-                subjects['{{ $name }}'] = '{{ $name }}';
+                subjects[i++] = '{{ $name }}';
         @endforeach
+        var check_subjects = function (sn) {
+            found = false;
+            for(var k2 in subjects) {
+                $(":input[name=" + subjects[k2] + "]").each(function(){
+                    if (subjects[k2] != sn) {
+                        $(this).prop('checked', false);
+                    } else {
+                        if (!found && $(this).prop('checked')) found = true;
+                    }
+                })
+            }
+            if (found) return true;
+            alert('Error: 必须选择一项科目');
+            return false;
+        };
         $(document).ready(function() {
-            for (var k in subjects) {
-                var subname = subjects[k];
-                var sub_div = $("#div_" + subname);
-                var button = $("<a href='javascript:void(0);' class='btn btn-primary' data='" + subname + "'>报名</a>");
-                button.click(function () {
-                    alert($(this).attr('data'));
+            if (i > 1) {
+                $("#examsignup").hide();
+                for (var k in subjects) {
+                    var subname = subjects[k];
+                    var sub_div = $("#div_" + subname);
+                    var button = $("<button class='btn btn-primary' data='" + subname + "'>{{ trans("comm.examsignup") }}</button>");
+                    button.click(function () {
+                        return check_subjects($(this).attr('data'));
+                    });
+                    var div = $("<div class='divbutton'><div>");
+                    div.append(button);
+                    sub_div.append(div);
+                }
+            } else {
+                $("#examsignup").click(function() {
+                    return check_subjects(subjects[0]);
                 });
-                var div = $("<div class='divbutton'><div>");
-                div.append(button);
-                sub_div.append(div);
             }
         });
     </script>

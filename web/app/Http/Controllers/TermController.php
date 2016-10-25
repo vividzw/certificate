@@ -36,12 +36,25 @@ class TermController extends Controller
 
 	public function afterSaved(Request $request, $object) {
 		$object::cacheObject($object->id, true);
+		if ($object->name) {
+			$object::cacheUniqueObject($object->name, true);
+		}
 		return true;
 	}
 
 	public function grid(Request $request) {
 		$object = $this->object;
 		$grid = \DataGrid::source($object);  //same source types of DataSet
+		self::build_grid($request, $object, $grid);
+		$path = $this->url_path();
+		$grid->edit('/' . $path . 'edit', trans('comm.edit'), 'modify|delete'); //shortcut to link DataEdit actions
+		$grid->link('/' . $path . 'edit', trans('comm.add'), "TR");  //add button
+
+		$view = strtolower(self::class_to_view_path($object));
+		return view('admin/' . $view . '/grid', compact('grid', 'path'));
+	}
+
+	public function build_grid(Request $request, $object, $grid) {
 
 		$grid->add('id','ID', true)->style("width:100px");
 		foreach ($object->editable() as $f) {
@@ -68,25 +81,18 @@ class TermController extends Controller
 				$grid->add($f, trans('comm.' . $f), $f == $object::$unique);
 			}
 		}
-		$path = $this->url_path();
 
-		$grid->edit('/' . $path . 'edit', trans('comm.edit'), 'modify|delete'); //shortcut to link DataEdit actions
-
-
-		$grid->link('/' . $path . 'edit', trans('comm.add'), "TR");  //add button
 		$grid->orderBy('id','desc'); //default orderby
 		$grid->paginate(10); //pagination
-		$view = strtolower(self::class_to_view_path($object));
-		return view('admin/' . $view . '/grid', compact('grid', 'path'));
 	}
 
 	public function form(Request $request) {
 		$object = $this->object;
 		$id = $request->get('modify', $request->get('delete'));
 		if ($id && is_numeric($id)) {
-			$form = \DataForm::source($object::activeWhere("id", $id)->first());
+			$form = \DataForm::source($object = $object::activeWhere("id", $id)->first());
 		} else {
-			$form = \DataForm::source(new $object());
+			$form = \DataForm::source($object);
 			$form->set('schoolterm', $object::school_term()->id);
 		}
 		//add fields to the form
@@ -140,10 +146,9 @@ class TermController extends Controller
 			$form->set('status', '0');
 			$form->submit(trans('comm.delete'));
 		}
-		$_this = $this;
-		$form->saved(function() use ($_this, $form, $request, $object, $path)
+		$form->saved(function() use ($form, $request, $object, $path)
 		{
-			if ($_this->afterSaved($request, $object)) {
+			if ($this->afterSaved($request, $object)) {
 				$form->message(trans('comm.saveok'));
 				$form->link("/$path", trans('comm.back'));
 			} else {

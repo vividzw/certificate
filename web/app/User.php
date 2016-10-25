@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -71,5 +72,22 @@ class User extends Authenticatable
 			return false;
 		}
 		return true;
+	}
+
+	private static $guard_user = null;
+	public static function checkRole($name) {
+		if (!self::$guard_user) {
+			self::$guard_user = Auth::guard()->user();
+		}
+		$user = self::$guard_user;
+		if ($user->admin()) {
+			return in_array($name, ['admin', 'exam_admin', 'classteacher']);
+		}
+		if ($user->exam_admin()) {
+			return in_array($name, ['exam_admin', 'classteacher']);
+		}
+		if ($user->class_teacher()) {
+			return $name == 'classteacher';
+		}
 	}
 }
