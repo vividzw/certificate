@@ -6,6 +6,7 @@ use App\ClassRoom;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\ClassTeacher;
 
 class TermController extends Controller
 {
@@ -32,6 +33,10 @@ class TermController extends Controller
 
 	private function url_path() {
 		return $this->path ? $this->path . "/" : strtolower(self::class_to_path($this->object)) . "/";
+	}
+
+	public function check_classteacher($classname = null) {
+		return ClassTeacher::check_classteacher($classname);
 	}
 
 	public function afterSaved(Request $request, $object) {

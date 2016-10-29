@@ -66,7 +66,7 @@ class User extends Authenticatable
 			if ($path == 'user') return false;
 		}
 		if ($user->class_teacher()) {
-			if (in_array($path, ['examreport', 'examadd'])){
+			if (in_array($path, ['examreport', 'examadd', 'classroomstudents'])){
 				return true;
 			}
 			return false;

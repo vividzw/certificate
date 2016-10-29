@@ -14,6 +14,7 @@ use App\ExamSignup;
 use App\Exam;
 
 class ExamSignupController extends TermController {
+
 	public function select_subject(Request $request) {
 		$teacher = ClassTeacher::cacheUniqueObject(\Auth::user()->name);
 		$subjects = [];
@@ -43,7 +44,7 @@ class ExamSignupController extends TermController {
 				->options($ss);
 		}
 		$form->submit(trans('comm.examsignup') . "(1)", "BL", ['id' => 'examsignup']);
-		$path = "examadd";
+		$path = "examadd/";
 		$subject_names = array_keys($subjects);
 		return view('exam_signup/select_subject/form', compact('form', 'path', 'subject_names'));
 	}
@@ -71,6 +72,9 @@ class ExamSignupController extends TermController {
 		if (!$classroom->id) {
 			die("没有这个班级");
 		}
+		if (!$this->check_classteacher($classroom->id)) {
+			die("你没有权限");
+		}
 		if (!$subject) {
 			die("没有这个科目或此班级所在专业部没有符合条件的专业");
 		}
@@ -90,7 +94,7 @@ class ExamSignupController extends TermController {
 		$form->hidden('subjectId', '')->insertValue($subject->id);
 		//$form->submit(trans('comm.examsignup') . "(2)");
 		$form->build();
-		$path = "examadd";
+		$path = "examadd/";
 		return view('exam_signup/select_students/grid', compact('grid', 'form', 'path'));
 	}
 
@@ -99,6 +103,9 @@ class ExamSignupController extends TermController {
 		$subject = Subject::cacheObject($request->get('subject'));
 		if (!$classroom) {
 			die("没有这个班级");
+		}
+		if (!$this->check_classteacher($classroom->id)) {
+			die("你没有权限");
 		}
 		if (!$subject) {
 			die("没有这个科目");
@@ -149,7 +156,7 @@ class ExamSignupController extends TermController {
 				$this->afterSaved($request, $exam);
 			}
 		}
-		$path = "examadd";
+		$path = "examadd/";
 		$grid = \DataGrid::source($exam_signups);
 		self::build_grid($request, new \App\ExamSignup(), $grid, ['score', 'pass', 'bak']);
 		/*$grid->add('score', '成绩')->cell(function($value) {
@@ -159,12 +166,7 @@ class ExamSignupController extends TermController {
 	}
 
 	public function pay(Request $request) {
-		$teacher = ClassTeacher::cacheUniqueObject(\Auth::user()->name);
-		$classrooms = [];
-		foreach($teacher->classroom_list() as $name => $class_room) {
-			if (isset($classrooms[$class_room->id])) continue;
-			$classrooms[$class_room->name] = $class_room->name;
-		}
+		$classrooms = ClassTeacher::current_classrooms();
 		if (count($classrooms) == 1) {
 			$request->merge(["classroom" => current($classrooms)]);
 			return $this->pay_students($request);
@@ -177,7 +179,7 @@ class ExamSignupController extends TermController {
 			->options($classrooms);
 		$form->hidden('select_classroom', '1')->insertValue(1);
 		$form->submit(trans('comm.pay') . "(1)", "BL", ['id' => 'examsignup']);
-		$path = "examadd";
+		$path = "examadd/";
 		return view('exam_signup/pay/form', compact('form', 'path'));
 	}
 
@@ -187,6 +189,9 @@ class ExamSignupController extends TermController {
 		}
 		$classroom = ClassRoom::cacheUniqueObject($request->get('classroom'));
 		if (!$classroom) die("班级错误");
+		if (!$this->check_classteacher($classroom->id)) {
+			die("你没有权限");
+		}
 		$students = [];
 		foreach ($classroom->students()->get() as $student) {
 			$students[] = $student->name;
@@ -221,7 +226,7 @@ class ExamSignupController extends TermController {
 
 		//$form->submit(trans('comm.examsignup') . "(2)");
 		$form->build();
-		$path = "examadd";
+		$path = "examadd/";
 		return view('exam_signup/pay/grid', compact('grid', 'form', 'path'));
 	}
 	public function paid(Request $request) {
@@ -230,6 +235,9 @@ class ExamSignupController extends TermController {
 		}
 		$classroom = ClassRoom::cacheUniqueObject($request->get('classroom'));
 		if (!$classroom) die("班级错误");
+		if (!$this->check_classteacher($classroom->id)) {
+			die("你没有权限");
+		}
 		$sIds = $request->get('cellid');
 		if (!$sIds) {
 			die('请选择学生');
@@ -251,6 +259,9 @@ class ExamSignupController extends TermController {
 		$exam_signup = ExamSignup::object($request->get('id'));
 		if (!$exam_signup) die('非法访问');
 		$classroom = $request->get('classroom');
+		if (!$this->check_classteacher($classroom)) {
+			die("你没有权限");
+		}
 		$form = \DataForm::source($exam_signup);
 		$exam_signup->readonly = array_merge($exam_signup->readonly, ['pay_fee']);
 		$this->build_form($request, $form, $exam_signup, ['score', 'pass', 'bak']);
@@ -264,7 +275,7 @@ class ExamSignupController extends TermController {
 				$form->message(trans('comm.saveerr'));
 			}
 		});
-		$path = "examadd";
+		$path = "examadd/";
 		return view('exam_signup/pay/pay_one_form', compact('grid', 'form', 'path'));
 	}
 }

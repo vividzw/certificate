@@ -73,9 +73,16 @@
                         <li><a href="{{ url('/register') }}">{{ trans("app.register") }}</a></li>
                         @endif
                     @else
+                        @if (\App\User::checkRole('exam_admin'))
                         <li><a href="/{{ $path }}export/tpl">{{ trans('app.excel_template') }}</a></li>
                         <li><a href="/{{ $path }}export">{{ trans('app.export') }}</a></li>
                         <li><a href="/{{ $path }}import">{{ trans('app.import') }}</a></li>
+                        @endif
+                        @if (\App\User::checkRole('classteacher'))
+                        <li><a href="/student/export/tpl">{{ trans('app.excel_template') }}</a></li>
+                        <li><a href="/student/export">{{ trans('app.export') }}</a></li>
+                        <li><a href="/student/import">{{ trans('app.import') }}</a></li>
+                        @endif
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>

@@ -30,6 +30,11 @@ Route::post('/examadd/pay_one', 'ExamSignupController@pay_one');
 Route::get('/examadd/pay_students', 'ExamSignupController@pay_students');
 Route::post('/examadd/pay_students', 'ExamSignupController@pay_students');
 
+Route::get('/classroomstudents', 'ClassTeacherController@students');
+Route::post('/classroomstudents', 'ClassTeacherController@students');
+Route::get('/classroomstudents/edit/{id?}', 'ClassTeacherController@students_form');
+Route::post('/classroomstudents/edit/{id?}', 'ClassTeacherController@students_form');
+
 //For Admin
 Route::get('/depart', 'ProDepartmentController@grid');
 Route::get('/depart/edit/{id?}', 'ProDepartmentController@form');
