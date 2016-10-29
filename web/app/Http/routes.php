@@ -23,6 +23,12 @@ Route::get('/home', 'HomeController@index');
 //For ClassTeacher
 Route::get('/examadd', 'ExamSignupController@select_subject');
 Route::post('/examadd', 'ExamSignupController@select_students');
+Route::get('/examadd/pay', 'ExamSignupController@pay');
+Route::post('/examadd/pay', 'ExamSignupController@paid');
+Route::get('/examadd/pay_one', 'ExamSignupController@pay_one');
+Route::post('/examadd/pay_one', 'ExamSignupController@pay_one');
+Route::get('/examadd/pay_students', 'ExamSignupController@pay_students');
+Route::post('/examadd/pay_students', 'ExamSignupController@pay_students');
 
 //For Admin
 Route::get('/depart', 'ProDepartmentController@grid');

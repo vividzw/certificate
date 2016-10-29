@@ -9,7 +9,7 @@ use App\Http\Requests;
 
 class TermController extends Controller
 {
-	private $object = null;
+	protected $object = null;
 	protected $path = null;
 
 	/**
@@ -54,10 +54,11 @@ class TermController extends Controller
 		return view('admin/' . $view . '/grid', compact('grid', 'path'));
 	}
 
-	public function build_grid(Request $request, $object, $grid) {
+	public function build_grid(Request $request, $object, $grid, $exclude_fields = []) {
 
 		$grid->add('id','ID', true)->style("width:100px");
 		foreach ($object->editable() as $f) {
+			if (in_array($f, $exclude_fields)) continue;
 			if (isset($object->related[$f])) {
 				$class_name = "App\\" . $object->related[$f];
 				if (in_array($f, $object->array)) {
@@ -95,8 +96,34 @@ class TermController extends Controller
 			$form = \DataForm::source($object);
 			$form->set('schoolterm', $object::school_term()->id);
 		}
+		$this->build_form($request, $form, $object);
+
+		$path = $this->url_path();
+
+		if (!$id || $request->get('modify')) {
+			$form->submit(trans('comm.save'));
+		} else {
+			$form->set('status', '0');
+			$form->submit(trans('comm.delete'));
+		}
+		$form->saved(function() use ($form, $request, $object, $path)
+		{
+			if ($this->afterSaved($request, $object)) {
+				$form->message(trans('comm.saveok'));
+				$form->link("/$path", trans('comm.back'));
+			} else {
+				$form->message(trans('comm.saveerr'));
+			}
+		});
+
+		$view = strtolower(self::class_to_view_path($object));
+		return view('admin/' . $view . '/form', compact('form', 'path'));
+	}
+
+	public function build_form(Request $request, $form, $object, $exclude_fields = []) {
 		//add fields to the form
 		foreach ($object->editable() as $f) {
+			if (in_array($f, $exclude_fields)) continue;
 			if (isset($object->related[$f]) && !in_array($f, $object->related_text)) {
 				$class_name = "App\\" . $object->related[$f];
 				if (in_array($f, $object->array)) {
@@ -137,27 +164,6 @@ class TermController extends Controller
 				}
 			}
 		}
-
-		$path = $this->url_path();
-
-		if (!$id || $request->get('modify')) {
-			$form->submit(trans('comm.save'));
-		} else {
-			$form->set('status', '0');
-			$form->submit(trans('comm.delete'));
-		}
-		$form->saved(function() use ($form, $request, $object, $path)
-		{
-			if ($this->afterSaved($request, $object)) {
-				$form->message(trans('comm.saveok'));
-				$form->link("/$path", trans('comm.back'));
-			} else {
-				$form->message(trans('comm.saveerr'));
-			}
-		});
-
-		$view = strtolower(self::class_to_view_path($object));
-		return view('admin/' . $view . '/form', compact('form', 'path'));
 	}
 
 	public function export(Request $request, $template = null) {

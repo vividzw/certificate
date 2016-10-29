@@ -44,6 +44,7 @@ return [
 	'score' => 'Score',
 	'pass' => 'PASS',
 	'bak' => 'Bak',
+	'pay' => 'Pay',
 
 	'education' => 'Education',
 

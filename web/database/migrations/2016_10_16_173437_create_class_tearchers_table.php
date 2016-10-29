@@ -21,7 +21,7 @@ class CreateClassTearchersTable extends Migration
 			$table->string('back')->nullable();
 			$table->string('password');
 			$table->integer('schoolterm');
-			$table->tinyInteger('status');
+			$table->tinyInteger('status')->default(1);
 			$table->rememberToken();
 			$table->timestamps();
 

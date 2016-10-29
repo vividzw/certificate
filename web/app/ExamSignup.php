@@ -19,7 +19,7 @@ class ExamSignup extends TermModel
 		'score', //成绩
 		'pass', //合格?
 		'bak',  //备注
-		'lock', //锁定,只能查看,不能修改
+		'locked', //锁定,只能查看,不能修改
 		'schoolterm',
 	];
 
@@ -47,6 +47,6 @@ class ExamSignup extends TermModel
 	];
 
 	public function editable() {
-		return array_diff($this->fillable, ['schoolterm', 'lock']);
+		return array_diff($this->fillable, ['schoolterm', 'locked']);
 	}
 }

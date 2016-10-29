@@ -21,7 +21,7 @@ class CreateStudentsTable extends Migration
 			$table->string('education');
 			$table->string('subjects')->nullable();
 			$table->integer('schoolterm');
-			$table->tinyInteger('status');
+			$table->tinyInteger('status')->default(1);
 			$table->timestamps();
 
 			$table->index('name', 'index_name');

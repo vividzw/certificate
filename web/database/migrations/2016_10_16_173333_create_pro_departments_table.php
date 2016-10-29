@@ -17,7 +17,7 @@ class CreateProDepartmentsTable extends Migration
 			$table->string('name');
 			$table->string('subjects');
 			$table->integer('schoolterm');
-			$table->tinyInteger('status');
+			$table->tinyInteger('status')->default(1);
 			$table->timestamps();
 
 			$table->index('name', 'index_name');

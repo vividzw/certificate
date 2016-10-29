@@ -45,6 +45,20 @@ class TermModel extends Model
 		return $query;
 	}
 
+	public function appendValue($field, $value) {
+		if (strlen($this->$field) == 0) {
+			$this->$field = $value;
+			return true;
+		}
+		$values = explode("|", $this->$field);
+		if (!in_array($value, $values)) {
+			$values[] = $value;
+			$this->$field = join("|", $values);
+			return true;
+		}
+		return false;
+	}
+
 	public static function activeWhere($key = null, $opt = null, $val = null) {
 		if (is_null($val)) {
 			$val = $opt;
@@ -91,6 +105,15 @@ class TermModel extends Model
 
 	public static function id_parse($id) {
 		return intval(substr($id, 3));
+	}
+
+	public static function checkObject($obj, $val) {
+		if ($obj->id == $val) return true;
+		if ($val == "id:{$obj->id}") return true;
+		if ($obj::$unique && $obj->{$obj::$unique} == $val) {
+			return true;
+		}
+		return false;
 	}
 
 	public static function objectByIdOrName($v) {

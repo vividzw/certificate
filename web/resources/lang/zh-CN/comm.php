@@ -44,6 +44,7 @@ return [
 	'score' => '成绩',
 	'pass' => '评定',
 	'bak' => '备注',
+	'pay' => '缴费',
 
 	'education' => '学历',
 

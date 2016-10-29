@@ -22,7 +22,8 @@ class CreateExamSignupTable extends Migration
 			$table->string('pass');
 			$table->string('bak');
 			$table->integer('schoolterm');
-			$table->tinyInteger('status');
+			$table->tinyInteger('locked');
+			$table->tinyInteger('status')->default(1);
 			$table->timestamps();
 
 			$table->index('student', 'index_student');

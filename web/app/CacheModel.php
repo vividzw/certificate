@@ -27,7 +27,7 @@ trait CacheModel
 		if ($obj) {
 			\Cache::store('redis')->put($cacheKey, serialize($obj), 86400 * 30);
 			if ($update) {
-				if ($field == "id") {
+				if ($field != "id") {
 					if (static::$unique) {
 						\Cache::store('redis')->put(
 							static::cacheKey(static::$unique, $obj->{static::$unique}),

@@ -16,10 +16,11 @@ class CreateExamTable extends Migration
 			$table->increments('id');
 			$table->string('student');
 			$table->string('subject');
+			$table->float('fee');
 			$table->integer('score');
 			$table->string('pass');
 			$table->integer('schoolterm');
-			$table->tinyInteger('status');
+			$table->tinyInteger('status')->default(1);
 			$table->timestamps();
 
 			$table->index('student', 'index_student');

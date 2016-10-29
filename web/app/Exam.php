@@ -14,6 +14,7 @@ class Exam extends TermModel
 	protected $fillable = [
 		'student', //名称 50
 		'subject', //对应科目信息表之科目字段名
+		'fee',
 		'score', //成绩
 		'pass', //合格?
 		'schoolterm',

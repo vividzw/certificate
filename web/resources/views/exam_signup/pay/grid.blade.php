@@ -12,14 +12,13 @@
                     {!! $grid !!}
                     <div class="btn-toolbar" role="toolbar">
                         <div class="pull-left">
-                            <input class="btn btn-primary" value="{{ trans('comm.examsignup') }}(2)" type="submit">
+                            <input class="btn btn-primary" value="{{ trans('comm.pay') }}(2)" type="submit">
                             &nbsp;&nbsp;
                             <a href="javascript:void(0)" onclick="return allselect(this);">全选/反选</a>
                         </div>
                     </div>
                     {!! $form->render('select_students') !!}
-                    {!! $form->render('classroomId') !!}
-                    {!! $form->render('subjectId') !!}
+                    {!! $form->render('classroom') !!}
                     {!! $form->footer !!}
                 </div>
             </div>

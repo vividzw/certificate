@@ -18,7 +18,7 @@ class CreateSubjectsTable extends Migration
 			$table->string('alias');
 			$table->float('fee');
 			$table->integer('schoolterm');
-			$table->tinyInteger('status');
+			$table->tinyInteger('status')->default(1);
 			$table->timestamps();
 
 			$table->index('name', 'index_name');
