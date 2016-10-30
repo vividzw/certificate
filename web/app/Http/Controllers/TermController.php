@@ -50,7 +50,7 @@ class TermController extends Controller
 	public function grid(Request $request) {
 		$object = $this->object;
 		$grid = \DataGrid::source($object);  //same source types of DataSet
-		self::build_grid($request, $object, $grid);
+		static::build_grid($request, $object, $grid);
 		$path = $this->url_path();
 		$grid->edit('/' . $path . 'edit', trans('comm.edit'), 'modify|delete'); //shortcut to link DataEdit actions
 		$grid->link('/' . $path . 'edit', trans('comm.add'), "TR");  //add button
@@ -320,10 +320,12 @@ class TermController extends Controller
 							if ($obj->id) {
 								$obj->update();
 							} else {
-								$data['schoolterm'] = $obj::school_term()->id;
-								$obj = $class_name::create($data);
+								if (current($data)) {
+									$data['schoolterm'] = $obj::school_term()->id;
+									$obj = $class_name::create($data);
+								}
 							}
-							$obj::cacheObject($obj->id, true);
+							if ($obj->id) $obj::cacheObject($obj->id, true);
 						}
 					}
 					unlink($filepath);

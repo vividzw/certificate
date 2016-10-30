@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassRoom extends TermModel
 {
+	public $examsign = "";
 	/**
 	 * The attributes that are mass assignable.
 	 *
@@ -26,4 +27,5 @@ class ClassRoom extends TermModel
 	public function students() {
 		return \App\Student::activeWhere('classroom', "id:{$this->id}");
 	}
+
 }

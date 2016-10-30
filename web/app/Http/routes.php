@@ -59,6 +59,9 @@ Route::post('/classroom/edit/{id?}', 'ClassRoomController@form');
 Route::get('/classroom/export/{template?}', 'ClassRoomController@export');
 Route::get('/classroom/import', 'ClassRoomController@import');
 Route::post('/classroom/import', 'ClassRoomController@import');
+Route::get('/classroom/examsignup/{classroom}', 'ClassRoomController@exam_students');
+Route::post('/classroom/examsignup/{classroom}', 'ClassRoomController@exam_students');
+Route::get('/classroom/examsignup/{classroom}/lock', 'ClassRoomController@exam_lock');
 
 Route::get('/classteacher', 'ClassTeacherController@grid');
 Route::get('/classteacher/edit/{id?}', 'ClassTeacherController@form');

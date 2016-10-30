@@ -43,6 +43,10 @@ class User extends Authenticatable
 		return $this->class_teacher() || $this->role == "Student";
 	}
 
+	public function only_class_teacher() {
+		return $this->role == "ClassTeacher";
+	}
+
 	public static function object($id) {
 		return static::where('id', $id)->first();
 	}
@@ -81,6 +85,9 @@ class User extends Authenticatable
 		}
 		$user = self::$guard_user;
 		if (in_array($path, ["classroomstudents/"])) return false;
+		if ($path == 'only_classteacher') {
+			return $user->only_class_teacher() && $name == 'classteacher';
+		}
 		if ($user->admin()) {
 			return in_array($name, ['admin', 'exam_admin', 'classteacher']);
 		}

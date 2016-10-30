@@ -61,7 +61,7 @@
                         <li><a href="{{ url('/classteacher') }}/">{{ trans('comm.classteacher') }}</a></li>
                         <li><a href="{{ url('/student') }}/">{{ trans('comm.student') }}</a></li>
                         @endif
-                        @if (\App\User::checkRole('classteacher'))
+                        @if (\App\User::checkRole('classteacher', 'only_classteacher'))
                         <li><a href="{{ url('/examadd') }}/">{{ trans('comm.examadd') }}</a></li>
                         <li><a href="{{ url('/examadd/pay') }}/">{{ trans('comm.pay') }}</a></li>
                         <li><a href="{{ url('/classroomstudents') }}/">{{ trans('comm.student') }}</a></li>
