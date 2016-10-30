@@ -30,10 +30,13 @@ Route::post('/examadd/pay_one', 'ExamSignupController@pay_one');
 Route::get('/examadd/pay_students', 'ExamSignupController@pay_students');
 Route::post('/examadd/pay_students', 'ExamSignupController@pay_students');
 
-Route::get('/classroomstudents', 'ClassTeacherController@students');
-Route::post('/classroomstudents', 'ClassTeacherController@students');
-Route::get('/classroomstudents/edit/{id?}', 'ClassTeacherController@students_form');
-Route::post('/classroomstudents/edit/{id?}', 'ClassTeacherController@students_form');
+Route::get('/classroomstudents', 'ClassTeacherAdminController@students');
+Route::post('/classroomstudents', 'ClassTeacherAdminController@students');
+Route::get('/classroomstudents/edit/{classroom}/{id?}', 'ClassTeacherAdminController@students_form');
+Route::post('/classroomstudents/edit/{classroom}/{id?}', 'ClassTeacherAdminController@students_form');
+Route::get('/classroomstudents/export/{classroom}/{template?}', 'ClassTeacherAdminController@student_export');
+Route::get('/classroomstudents/import/{classroom}', 'ClassTeacherAdminController@student_import');
+Route::post('/classroomstudents/import/{classroom}', 'ClassTeacherAdminController@student_import');
 
 //For Admin
 Route::get('/depart', 'ProDepartmentController@grid');

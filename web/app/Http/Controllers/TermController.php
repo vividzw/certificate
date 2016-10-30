@@ -93,7 +93,13 @@ class TermController extends Controller
 	}
 
 	public function form(Request $request) {
-		$object = $this->object;
+		$path = $this->url_path();
+		$form = $this->edit_form($request, $this->object, $path);
+		$view = strtolower(self::class_to_view_path($this->object));
+		return view('admin/' . $view . '/form', compact('form', 'path'));
+	}
+
+	public function edit_form(Request $request, $object, $path, $exclude_fields = []) {
 		$id = $request->get('modify', $request->get('delete'));
 		if ($id && is_numeric($id)) {
 			$form = \DataForm::source($object = $object::activeWhere("id", $id)->first());
@@ -101,13 +107,19 @@ class TermController extends Controller
 			$form = \DataForm::source($object);
 			$form->set('schoolterm', $object::school_term()->id);
 		}
-		$this->build_form($request, $form, $object);
+		$this->build_form($request, $form, $object, $exclude_fields);
 
-		$path = $this->url_path();
-
+		$readonly_reset = function () use ($request, $form, $object) {
+			if (!$request->get('save')) return;
+			foreach($object->readonly as $f) {
+				$form->set($f, $object->{$f});
+			}
+		};
 		if (!$id || $request->get('modify')) {
 			$form->submit(trans('comm.save'));
+			$readonly_reset();
 		} else {
+			$readonly_reset();
 			$form->set('status', '0');
 			$form->submit(trans('comm.delete'));
 		}
@@ -120,19 +132,18 @@ class TermController extends Controller
 				$form->message(trans('comm.saveerr'));
 			}
 		});
-
-		$view = strtolower(self::class_to_view_path($object));
-		return view('admin/' . $view . '/form', compact('form', 'path'));
+		return $form;
 	}
 
 	public function build_form(Request $request, $form, $object, $exclude_fields = []) {
 		//add fields to the form
 		foreach ($object->editable() as $f) {
 			if (in_array($f, $exclude_fields)) continue;
+			$cell = null;
 			if (isset($object->related[$f]) && !in_array($f, $object->related_text)) {
 				$class_name = "App\\" . $object->related[$f];
 				if (in_array($f, $object->array)) {
-					$form->add($f, trans('comm.' . $f), 'checkboxgroup')
+					$cell = $form->add($f, trans('comm.' . $f), 'checkboxgroup')
 						->options($class_name::selectObjects());
 					$arr = [];
 					foreach (explode("|", $form->model->$f) as $_id) {
@@ -144,34 +155,38 @@ class TermController extends Controller
 					}
 					$form->model->$f = join("|", $arr);
 				} else {
-					$form->add($f, trans('comm.' . $f),'select')
+					$cell = $form->add($f, trans('comm.' . $f),'select')
 						->options($class_name::selectObjects());
 					if (strpos($form->model->$f, "id:") !== 0) {
 						$form->model->$f = $class_name::convertIdOrName($form->model->$f);
 					}
 				}
+				if (in_array($f, $object->readonly) && $form->model->$f) {
+					$cell->attributes(['disabled' => 'disabled']);
+				}
 			} else {
 				if (isset($object->initData[$f])) {
 					if (is_array($object->initData[$f])) {
-						$form->add($f, trans('comm.' . $f),'select')
+						$cell = $form->add($f, trans('comm.' . $f),'select')
 							->options($object->initData[$f]);
+						if (in_array($f, $object->readonly) && $form->model->$f) {
+							$cell->attributes(['disabled' => 'disabled']);
+						}
 					} else {
 						$form->model->$f = $object->initData[$f];
-						$form->add($f, trans('comm.' . $f), 'text')->rule('required');
+						$cell = $form->add($f, trans('comm.' . $f), 'text')->rule('required');
 					}
 				} else {
-					if (in_array($f, $object->readonly) && $form->model->$f) {
-						$form->add($f, trans('comm.' . $f), 'text')->rule('required')
-							->attributes(['readonly' => 'readonly']);
-					} else {
-						$form->add($f, trans('comm.' . $f), 'text')->rule('required');
-					}
+					$cell = $form->add($f, trans('comm.' . $f), 'text')->rule('required');
 				}
+			}
+			if ($cell && in_array($f, $object->readonly) && $form->model->$f) {
+				$cell->attributes(['readonly' => 'readonly']);
 			}
 		}
 	}
 
-	public function export(Request $request, $template = null) {
+	public function export(Request $request, $source = null, $template = null) {
 		$object = $this->object;
 		$cellData = [
 //			['学号','姓名','成绩'],
@@ -195,7 +210,8 @@ class TermController extends Controller
 		$cellData[] = $data0;
 		$cellData[] = $data1;
 		if (!$template) {
-			foreach ($object->activeWhere()->get() as $k => $o) {
+			if (!$source) $source = $object->activeWhere();
+			foreach ($source->get() as $k => $o) {
 				$data = [];
 				$data[] = $o->id;
 				foreach ($object->editable() as $k) {
@@ -231,10 +247,14 @@ class TermController extends Controller
 	}
 
 	public function import(Request $request) {
-		$object = new static();
-		$form = \DataForm::source($object);
-
 		$path = $this->url_path();
+		$form = $this->import_form($request, $this->object, $path);
+		$view = strtolower(self::class_to_view_path($this->object));
+		return view('admin/' . $view . '/form', compact('form', 'path'));
+	}
+
+	public function import_form(Request $request, $object, $path, $relateObj = null) {
+		$form = \DataForm::source($object);
 
 		$filename = (date('YmdHis')) . '.xls';
 		$form->add('excel', trans('comm.import_file'), 'file')
@@ -243,15 +263,17 @@ class TermController extends Controller
 
 		$form->submit(trans('app.import'));
 
-		$form->saved(function() use ($form, $path, $filename)
+		$form->saved(function() use ($form, $path, $filename, $object, $relateObj)
 		{
 			$filepath = 'storage/xls/' . $path . $filename;
 			if (file_exists($filepath)) {
-				\Excel::load($filepath, function ($reader) use ($filepath) {
+				$message = "";
+				\Excel::load($filepath, function ($reader) use ($filepath, $object, $relateObj, &$message) {
+					$relatedClassName = $relateObj ? get_class($relateObj) : null;
 					$results = $reader->all();
-					$sheet_name = trans('comm.' . strtolower(self::class_to_path($this->object))) . trans('comm.list');
+					$sheet_name = trans('comm.' . strtolower(self::class_to_path($object))) . trans('comm.list');
 					if ($results->getTitle() == $sheet_name) {
-						$class_name = get_class($this->object);
+						$class_name = get_class($object);
 						foreach($results as $i => $item) {
 							if ($i == 0) continue;
 							$data = [];
@@ -278,11 +300,18 @@ class TermController extends Controller
 									if (in_array($k, $obj->array)) {
 										$arr = [];
 										foreach (preg_split("/(,|，)/", $v) as $_id) {
-											$arr[] = $sub_class_name::convertIdOrName($_id);
+											$arr[] = $sub_class_name::convertIdOrName($_id, true);
 										}
 										$obj->$k = join("|", $arr);
 									} else {
-										$obj->$k = $sub_class_name::convertIdOrName($v);
+										$obj->$k = $sub_class_name::convertIdOrName($v, true);
+									}
+									if ($relatedClassName && $relatedClassName == $sub_class_name) {
+										if ($obj->$k != "id:{$relateObj->id}") {
+											$objName = ($class_name::$unique ? $obj->{$class_name::$unique} : "") . "({$obj->id})";
+											$message .= "<br />项: " . $objName . " 没有导入, 可能输入错误或没有权限";
+											continue 2;
+										}
 									}
 								} else {
 									$obj->$k = $v;
@@ -300,16 +329,14 @@ class TermController extends Controller
 					unlink($filepath);
 				});
 
-				$form->message(trans('comm.importok'));
+				$form->message(trans('comm.importok') . "<span class='red'>" . $message . "</span>");
 				$form->link("/$path", trans('comm.back'));
 			} else {
 				$form->message(trans('comm.importerr'));
 				$form->link("/{$path}import", trans('comm.back'));
 			}
 		});
-
-		$view = strtolower(self::class_to_view_path($this->object));
-		return view('admin/' . $view . '/form', compact('form', 'path'));
+		return $form;
 	}
 
 	private static function class_to_path($object) {

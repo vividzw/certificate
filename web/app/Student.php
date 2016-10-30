@@ -26,7 +26,7 @@ class Student extends TermModel
 		'classroom' => 'ClassRoom',
 		'subjects' => 'Subject'
 	];
-	public $readonly = ['name'];
+	public $readonly = ['name', 'classroom'];
 	public $initData = [
 		'sex' => [
 			'男' => '男',

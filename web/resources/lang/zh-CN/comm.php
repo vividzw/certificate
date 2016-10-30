@@ -38,7 +38,7 @@ return [
 	'idcard' => '身份证',
 
 	'examsignup' => '报考',
-	'examadd' => '报考(班主任专用)',
+	'examadd' => '班主任:报考',
 	'pay_fee' => '应交费用',
 	'paid_fee' => '已交费用',
 	'score' => '成绩',

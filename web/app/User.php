@@ -75,11 +75,12 @@ class User extends Authenticatable
 	}
 
 	private static $guard_user = null;
-	public static function checkRole($name) {
+	public static function checkRole($name, $path = null) {
 		if (!self::$guard_user) {
 			self::$guard_user = Auth::guard()->user();
 		}
 		$user = self::$guard_user;
+		if (in_array($path, ["classroomstudents/"])) return false;
 		if ($user->admin()) {
 			return in_array($name, ['admin', 'exam_admin', 'classteacher']);
 		}

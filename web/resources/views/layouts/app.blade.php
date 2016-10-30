@@ -23,6 +23,9 @@
         .fa-btn {
             margin-right: 6px;
         }
+        .red {
+            color : red;
+        }
     </style>
 </head>
 <body id="app-layout">
@@ -60,6 +63,8 @@
                         @endif
                         @if (\App\User::checkRole('classteacher'))
                         <li><a href="{{ url('/examadd') }}/">{{ trans('comm.examadd') }}</a></li>
+                        <li><a href="{{ url('/examadd/pay') }}/">{{ trans('comm.pay') }}</a></li>
+                        <li><a href="{{ url('/classroomstudents') }}/">{{ trans('comm.student') }}</a></li>
                         @endif
                     @endif
                 </ul>
@@ -73,15 +78,10 @@
                         <li><a href="{{ url('/register') }}">{{ trans("app.register") }}</a></li>
                         @endif
                     @else
-                        @if (\App\User::checkRole('exam_admin'))
+                        @if (\App\User::checkRole('exam_admin', $path))
                         <li><a href="/{{ $path }}export/tpl">{{ trans('app.excel_template') }}</a></li>
                         <li><a href="/{{ $path }}export">{{ trans('app.export') }}</a></li>
                         <li><a href="/{{ $path }}import">{{ trans('app.import') }}</a></li>
-                        @endif
-                        @if (\App\User::checkRole('classteacher'))
-                        <li><a href="/student/export/tpl">{{ trans('app.excel_template') }}</a></li>
-                        <li><a href="/student/export">{{ trans('app.export') }}</a></li>
-                        <li><a href="/student/import">{{ trans('app.import') }}</a></li>
                         @endif
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ClassRoom;
 use App\ClassTeacher;
 use App\Student;
 use Illuminate\Http\Request;
@@ -47,39 +48,5 @@ class ClassTeacherController extends TermController {
 			'email' => $data['email'],
 			'password' => bcrypt($data['password']),
 		]);
-	}
-
-	public function students(Request $request) {
-		if ($request->get('select_classroom') && $request->get('classroom')) {
-			return $this->classroom_students($request);
-		}
-		$classrooms = ClassTeacher::current_classrooms();
-		if (count($classrooms) == 1) {
-			$request->merge(["classroom" => current($classrooms)]);
-			return $this->classroom_students($request);
-		}
-		$data = new \stdClass();
-		$data->classroom = join("|", $classrooms);
-		$form = \DataForm::source($data);
-		$form->add('classroom', trans("comm.classroom"), 'radiogroup')
-			->options($classrooms);
-		$form->hidden('select_classroom', '1')->insertValue(1);
-		$form->submit(trans('comm.save') . "(1)", "BL", ['id' => 'classroom_student']);
-		$path = "classroomstudents/";
-		return view('classteacher/students/form', compact('form', 'path'));
-	}
-
-	public function classroom_students(Request $request) {
-		$classteacher = ClassTeacher::current_classteacher();
-		$grid = \DataGrid::source($classteacher->students($request->get('classroom')));  //same source types of DataSet
-		self::build_grid($request, new Student(), $grid);
-		$path = "classroomstudents/";
-		$grid->edit('/' . $path . 'edit/', trans('comm.edit'), 'modify|delete'); //shortcut to link DataEdit actions
-		$grid->link('/' . $path . 'edit/', trans('comm.add'), "TR");  //add button
-		return view('classteacher/students/grid', compact('grid', 'path'));
-	}
-
-	public function students_form(Request $request) {
-		die("coming soon");
 	}
 }
