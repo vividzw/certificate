@@ -320,7 +320,15 @@ class TermController extends Controller
 							if ($obj->id) {
 								$obj->update();
 							} else {
-								if (current($data)) {
+								$hasData = false;
+								foreach ($data as $dk => $dv) {
+									$dv = trim($dv);
+									if ($dv && !$hasData) {
+										$hasData = true;
+									}
+									$data[$dk] = $data;
+								}
+								if ($hasData) {
 									$data['schoolterm'] = $obj::school_term()->id;
 									$obj = $class_name::create($data);
 								}

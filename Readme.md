@@ -98,6 +98,7 @@ fork from <https://github.com/wyhw/certificate>
 	docker-compose stop
 
 ### 复制安装
+	chmod -R 777 public/storage
 	chmod -R 777 storage
 	chmod -R 777 bootstrap/cache
 	
