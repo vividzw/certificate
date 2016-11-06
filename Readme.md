@@ -96,6 +96,10 @@ fork from <https://github.com/wyhw/certificate>
 	#关闭机器之前最好停止 container docker，避免数据库文件损坏
 	cd docker/certweb/
 	docker-compose stop
+
+### 复制安装
+	chmod -R 777 storage
+	chmod -R 777 bootstrap/cache
 	
 	
 ## 运行
